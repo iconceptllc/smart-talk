@@ -23,6 +23,8 @@ const ContactForm = () => {
 
     if (!captchaToken) {
       setFormStatus('error');
+      console.error("Captcha token is missing");
+
       return;
     }
 
@@ -56,6 +58,7 @@ const ContactForm = () => {
     })
     .catch((error) => {
       console.error('Error sending email:', error);
+      console.log('Error details:', error.response);
       setFormStatus('error');
     });
   };
