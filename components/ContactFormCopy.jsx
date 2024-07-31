@@ -1,6 +1,7 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import emailjs from '@emailjs/browser';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 const ContactForm = () => {
   const [name, setName] = useState('');
@@ -10,9 +11,22 @@ const ContactForm = () => {
   const [services, setServices] = useState('');
   const [message, setMessage] = useState('');
   const [formStatus, setFormStatus] = useState('');
+  const [captchaToken, setCaptchaToken] = useState('');
+  const recaptchaRef = useRef(null);
+
+  const handleCaptchaChange = (token) => {
+    setCaptchaToken(token);
+  };
 
   const sendEmail = (e) => {
     e.preventDefault();
+
+    if (!captchaToken) {
+      setFormStatus('error');
+      console.error("Captcha token is missing");
+
+      return;
+    }
 
     const templateParams = {
       from_name: name,
@@ -22,6 +36,7 @@ const ContactForm = () => {
       from_service: services,
       to_name: 'Smart Talk',
       message: message,
+      'g-recaptcha-response': captchaToken,
     };
 
     emailjs.send(
@@ -39,9 +54,11 @@ const ContactForm = () => {
       setServices('');
       setMessage('');
       setFormStatus('success');
+      recaptchaRef.current.reset();
     })
     .catch((error) => {
       console.error('Error sending email:', error);
+      console.log('Error details:', error.response);
       setFormStatus('error');
     });
   };
@@ -108,6 +125,14 @@ const ContactForm = () => {
               placeholder="Your Message"
               onChange={(e) => setMessage(e.target.value)}
             ></textarea>
+          </div>
+          <div className="flex flex-col sm:col-span-2">
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+              size="invisible"
+              onChange={handleCaptchaChange}
+            />
           </div>
           <div className="flex justify-left sm:col-span-2">
             <button
