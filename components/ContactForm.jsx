@@ -10,9 +10,37 @@ const ContactForm = () => {
   const [services, setServices] = useState('');
   const [message, setMessage] = useState('');
   const [formStatus, setFormStatus] = useState('');
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (name.trim() === '') newErrors.name = 'Name is required';
+    if (bname.trim() === '') newErrors.bname = 'Business Name is required';
+    if (email.trim() === '') {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = 'Email address is invalid';
+    }
+    if (number.trim() === '') {
+      newErrors.number = 'Contact Number is required';
+    } else if (!/^\d+$/.test(number)) {
+      newErrors.number = 'Contact Number is invalid';
+    }
+    if (services.trim() === '') newErrors.services = 'Service Interested is required';
+    if (message.trim() === '') newErrors.message = 'Message is required';
+    return newErrors;
+  };
 
   const sendEmail = (e) => {
     e.preventDefault();
+
+    const formErrors = validateForm();
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
+      setFormStatus('error');
+      return;
+    }
+    setErrors({});
 
     const templateParams = {
       from_name: name,
@@ -59,6 +87,7 @@ const ContactForm = () => {
               placeholder="Name"
               onChange={(e) => setName(e.target.value)}
             />
+             {errors.name && <div className="text-red mt-2">{errors.name}</div>}
           </div>
           <div className="flex flex-col">
             <input
@@ -69,6 +98,7 @@ const ContactForm = () => {
               placeholder="Business Name"
               onChange={(e) => setBname(e.target.value)}
             />
+{errors.bname && <div className="text-red mt-2">{errors.bname}</div>}
           </div>
           <div className="flex flex-col">
             <input
@@ -79,6 +109,8 @@ const ContactForm = () => {
               placeholder="Contact Number"
               onChange={(e) => setNumber(e.target.value)}
             />
+              {errors.number && <div className="text-red mt-2">{errors.number}</div>}
+
           </div>
           <div className="flex flex-col">
             <input
@@ -89,6 +121,8 @@ const ContactForm = () => {
               placeholder="Email ID"
               onChange={(e) => setEmail(e.target.value)}
             />
+             {errors.email && <div className="text-red mt-2">{errors.email}</div>}
+
           </div>
           <div className="flex flex-col sm:col-span-2">
             <input
@@ -99,6 +133,7 @@ const ContactForm = () => {
               placeholder="Services Interested"
               onChange={(e) => setServices(e.target.value)}
             />
+{errors.services && <div className="text-red mt-2">{errors.services}</div>}
           </div>
           <div className="flex flex-col sm:col-span-2">
             <textarea
@@ -108,6 +143,7 @@ const ContactForm = () => {
               placeholder="Your Message"
               onChange={(e) => setMessage(e.target.value)}
             ></textarea>
+{errors.message && <div className="text-red mt-2">{errors.message}</div>}
           </div>
           <div className="flex justify-left sm:col-span-2">
             <button
