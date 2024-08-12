@@ -16,6 +16,8 @@ export default function RootLayout({ children }) {
     <html lang="en">
        <GoogleTagManager gtmId="AW-1047332511" />
       <body className={inter.className}>
+      <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=AW-1047332511"
+height="0" width="0" style={{ display: "none", visibility: "hidden" }}></iframe></noscript>
         <div className='bg-black min-h-[100vh]'>
           <Hero />
           {children}
