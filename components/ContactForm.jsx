@@ -71,6 +71,7 @@ const ContactForm = () => {
     .catch((error) => {
       console.error('Error sending email:', error);
       setFormStatus('error');
+      console.log(error)
     });
   };
 

@@ -1,6 +1,8 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Hero from "@/components/Hero";
+import { GoogleTagManager } from '@next/third-parties/google' 
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,6 +14,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+       <GoogleTagManager gtmId="AW-1047332511" />
       <body className={inter.className}>
         <div className='bg-black min-h-[100vh]'>
           <Hero />
